@@ -68,8 +68,10 @@ class Bird {
     }
 
     update(deltaTime) {
-        this.vely += this.gravity * deltaTime;
+        this.vely += this.gravity * deltaTime * 0.5;
         this.y += this.vely * deltaTime;
+        this.vely += this.gravity * deltaTime * 0.5;
+
         this.collider.updatePosition(new Vector2(this.x + this.collierOffsetX, this.y + this.collierOffsetY));
 
         // Out of screen;
@@ -186,15 +188,15 @@ let bird;
 let pipes = [];
 let score = 0;
 
-let pipeLastSpawnTime = performance.now();
-let pipeSpawnInterval = 1400;
+let pipeSpawnTimer = 0;
+let pipeSpawnInterval = 1.4;
 
 // Will be used for parallax;
 let bgOffsetX = 0;
 
 function init() {
     bird = new Bird(textures.bird, 36, 95);
-    pipes = [];
+    pipes = [];    
     score = 0;
 
     // Create 3 pipe instances and recicle them when inactive;
@@ -238,9 +240,8 @@ function update(deltaTime) {
     }
    
     // Spawn any inactive pipes from time to time;
-    let currentTime = performance.now();
-    let elapsedTime = currentTime - pipeLastSpawnTime;
-    if (elapsedTime > pipeSpawnInterval) {
+    pipeSpawnTimer += deltaTime;
+    if (pipeSpawnTimer >= pipeSpawnInterval) {
         for (const pipe of pipes) {
             if (!pipe.active) {
                 pipe.respawn();
@@ -248,7 +249,7 @@ function update(deltaTime) {
             }
         }
 
-        pipeLastSpawnTime = currentTime;
+        pipeSpawnTimer = 0;
     }
 
     // Parallax
