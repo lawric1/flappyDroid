@@ -197,11 +197,10 @@ function init() {
     pipes = [];
     score = 0;
 
-    // Create 3 pipe instances and recicle when inactive;
-    let amount = 3;
-    while (amount--) {
-        pipes.push(new Pipe(textures.pipe1, Game.width + 20, randomInt(-130, -20)));
-    }
+    // Create 3 pipe instances and recicle them when inactive;
+    pipes.push(new Pipe(textures.pipe1, Game.width + 20, randomInt(-130, -20)));
+    pipes.push(new Pipe(textures.pipe1, Game.width + 20, randomInt(-130, -20)));
+    pipes.push(new Pipe(textures.pipe1, Game.width + 20, randomInt(-130, -20)));
 
     // Reset parallax;
     bgOffsetX = 0;
@@ -239,7 +238,8 @@ function update(deltaTime) {
     }
    
     // Spawn any inactive pipes from time to time;
-    let elapsedTime = performance.now() - pipeLastSpawnTime
+    let currentTime = performance.now();
+    let elapsedTime = currentTime - pipeLastSpawnTime;
     if (elapsedTime > pipeSpawnInterval) {
         for (const pipe of pipes) {
             if (!pipe.active) {
@@ -248,7 +248,7 @@ function update(deltaTime) {
             }
         }
 
-        pipeLastSpawnTime = performance.now();
+        pipeLastSpawnTime = currentTime;
     }
 
     // Parallax
